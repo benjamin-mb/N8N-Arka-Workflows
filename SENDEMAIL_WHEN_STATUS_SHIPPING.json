@@ -1,0 +1,279 @@
+{
+  "name": "SENDEMAIL-WHEN-STATUS-SHIPPING",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "4cb84fab-a22f-42d5-adea-cbcf537c16b0",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        64,
+        208
+      ],
+      "id": "1cd6e084-4d6e-4c72-aca3-ab3df70f9400",
+      "name": "Webhook",
+      "webhookId": "4cb84fab-a22f-42d5-adea-cbcf537c16b0"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "00621baa-5608-4cf7-9d6d-a52040a7e95e",
+              "name": "body.idOrden",
+              "value": "={{ $json.body.idOrden }}",
+              "type": "number"
+            },
+            {
+              "id": "93784f1a-b9be-4b82-afa3-82f07f794460",
+              "name": "body.email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "1daf7f48-51f7-4ede-8a0e-e53619f47cd7",
+              "name": "body.nombreUsuario",
+              "value": "={{ $json.body.nombreUsuario }}",
+              "type": "string"
+            },
+            {
+              "id": "38d83d46-e5e1-40ae-8494-2880ce6eb57b",
+              "name": "body.estadoEnvio",
+              "value": "={{ $json.body.estadoEnvio }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
+        208
+      ],
+      "id": "954baab7-d2ca-4fe2-bc91-b5623a0c7ef7",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.estadoEnvio }}",
+                    "rightValue": "preparando",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "44400397-47ba-49e8-a62d-60fb7eef7a7d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "preparando/confirmada"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fbc4fe05-8f5c-4660-8385-47f7e98a1366",
+                    "leftValue": "={{ $json.body.estadoEnvio }}",
+                    "rightValue": "en_camino",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "en-camino"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "689a7fa0-6217-4e09-b205-ec9578ff90ee",
+                    "leftValue": "={{ $json.body.estadoEnvio }}",
+                    "rightValue": "entregado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "entregado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        480,
+        208
+      ],
+      "id": "db1d1fe4-92fe-425e-9063-e626c7cebf3a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Edit Fields').item.json.body.email }}",
+        "subject": "ARKA ORDER NOTIFICATION✅💻",
+        "message": "=Hi  {{ $('Edit Fields').item.json.body.nombreUsuario }},\nWe are happy to have you as a customer and happy to know that you are having new products from arka, this is to notify you that your order with id:{{ $('Edit Fields').item.json.body.idOrden }} has been confirmed and is already being proccess by our team in order to be shipped😉.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        688,
+        32
+      ],
+      "id": "236fa575-b92a-49bd-8434-de6b232d87d0",
+      "name": "Send a message",
+      "webhookId": "57770333-f8ce-4f9b-9a4e-c87601b65090",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VNmG9H3sds16OSuN",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Edit Fields').item.json.body.email }}",
+        "subject": "ARKA ORDER NOTIFICATION✅💻",
+        "message": "=Hi  {{ $('Edit Fields').item.json.body.nombreUsuario }},\nArka just here letting you know that yout order with id:{{ $('Edit Fields').item.json.body.idOrden }}  is on it´s way to your address,we´ll get you that one as soon as possible⚡🚚.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        688,
+        224
+      ],
+      "id": "0209a41b-1ca3-4c37-842c-5854f8b37b38",
+      "name": "Send a message1",
+      "webhookId": "57770333-f8ce-4f9b-9a4e-c87601b65090",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VNmG9H3sds16OSuN",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Edit Fields').item.json.body.email }}",
+        "subject": "ARKA ORDER NOTIFICATION✅💻",
+        "message": "=Hi  {{ $('Edit Fields').item.json.body.nombreUsuario }},\nWe are happy because you order with id:{{ $('Edit Fields').item.json.body.idOrden }} has been delivered, we hope you really enjoy our technology 🤓, remember that if you have any problem you can contact us with this ph number +57 312-618-0163 between 8am-8pm👌.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        688,
+        416
+      ],
+      "id": "44874e31-bf03-495a-8dfe-2350ae845f0d",
+      "name": "Send a message2",
+      "webhookId": "57770333-f8ce-4f9b-9a4e-c87601b65090",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VNmG9H3sds16OSuN",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 1,
+  "meta": null
+}

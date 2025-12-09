@@ -1,0 +1,636 @@
+{
+  "name": "SAVE-ORDERS-CONFIRMED/CANCELLED",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a3b0c2ff-c479-4efd-9613-d31583a70b8a",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fdebf4a5-407e-43c1-b5a3-a357a2745f75",
+      "name": "Webhook",
+      "webhookId": "a3b0c2ff-c479-4efd-9613-d31583a70b8a"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body.items",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        384,
+        -64
+      ],
+      "id": "1cd2a8bd-0ff5-4549-9529-2da83da73652",
+      "name": "Split Array"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "92ecb7a9-4dfb-40d9-9392-80d97afbcb4b",
+              "leftValue": "={{ $json.body.items }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "array",
+                "operation": "lengthGt",
+                "rightType": "number"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ce3a0bdb-5395-4645-b6ea-2e0dd8666c61",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b60451d-54ae-48ad-819b-26426f43654d",
+              "name": "idProducto",
+              "value": "={{ $json.body.items[0].idProducto }}",
+              "type": "string"
+            },
+            {
+              "id": "79a177b0-57a0-464e-953f-aedfc4a695d7",
+              "name": "cantidad",
+              "value": "={{ $json.body.items[0].cantidad }}",
+              "type": "string"
+            },
+            {
+              "id": "bb3084e8-48a2-42ac-8415-26f6666c0446",
+              "name": "subtotal",
+              "value": "={{ $json.body.items[0].subtotal }}",
+              "type": "string"
+            },
+            {
+              "id": "f47730ad-ec68-40d4-9594-0b2df6a67e77",
+              "name": "fecha",
+              "value": "={{ $now.format('yyyy-MM-dd') }}",
+              "type": "string"
+            },
+            {
+              "id": "d9c12e65-fa7b-4ffe-bfdf-63b705d69afe",
+              "name": "estado",
+              "value": "={{ $json.body.items[0].estado }}",
+              "type": "string"
+            },
+            {
+              "id": "9f6f7c8d-5db7-4ce6-8293-3ebc1737a70b",
+              "name": "precio Unitario",
+              "value": "={{ $json.body.items[0].precioUnitario }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        224
+      ],
+      "id": "66acc39f-1bb5-4bf1-8304-c5c6d7f05b51",
+      "name": "Set fields1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1HTLxbDOFRSAerYmEj161822aywGF0i6oC-LQhIYJ-HY",
+          "mode": "list",
+          "cachedResultName": "VENTAS SEMANALES",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HTLxbDOFRSAerYmEj161822aywGF0i6oC-LQhIYJ-HY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HTLxbDOFRSAerYmEj161822aywGF0i6oC-LQhIYJ-HY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "idProducto": "={{ $json.idProducto }}",
+            "Cantidad": "={{ $json.cantidad }}",
+            "PrecioUnitario": "={{ $json['precio Unitario'] }}",
+            "Subtotal": "={{ $json.subtotal }}",
+            "Fecha": "={{ $now }}",
+            "Estado": "={{ $json.estado }}"
+          },
+          "matchingColumns": [
+            "idProducto"
+          ],
+          "schema": [
+            {
+              "id": "idProducto",
+              "displayName": "idProducto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Cantidad",
+              "displayName": "Cantidad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PrecioUnitario",
+              "displayName": "PrecioUnitario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Subtotal",
+              "displayName": "Subtotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        256
+      ],
+      "id": "767e25ee-721c-48d4-bbad-c2116df4aa12",
+      "name": "Add sell on sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "seFx2GDZ3Ot9ss91",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": "=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        640,
+        -48
+      ],
+      "id": "c7104077-5e46-45d3-97e8-ae97228a8c7c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b60451d-54ae-48ad-819b-26426f43654d",
+              "name": "idProducto",
+              "value": "={{ $json.idProducto }}",
+              "type": "string"
+            },
+            {
+              "id": "79a177b0-57a0-464e-953f-aedfc4a695d7",
+              "name": "cantidad",
+              "value": "={{ $json.cantidad }}",
+              "type": "string"
+            },
+            {
+              "id": "14ebb217-0446-4bdc-8345-921baee9b3be",
+              "name": "precioUnitario",
+              "value": "={{ $json.precioUnitario }}",
+              "type": "string"
+            },
+            {
+              "id": "bb3084e8-48a2-42ac-8415-26f6666c0446",
+              "name": "subtotal",
+              "value": "={{ $json.subtotal }}",
+              "type": "string"
+            },
+            {
+              "id": "f47730ad-ec68-40d4-9594-0b2df6a67e77",
+              "name": "fecha",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "8f9e53c7-66a4-42eb-9532-4a65511c5683",
+              "name": "fecha",
+              "value": "=\"{{ $now.format('yyyy-MM-dd') }}\"",
+              "type": "string"
+            },
+            {
+              "id": "d9c12e65-fa7b-4ffe-bfdf-63b705d69afe",
+              "name": "estado",
+              "value": "={{ $json.estado }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        -32
+      ],
+      "id": "4d5f2c12-b125-4cee-9676-cd9ea2f782f3",
+      "name": "Set fields2"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1HTLxbDOFRSAerYmEj161822aywGF0i6oC-LQhIYJ-HY",
+          "mode": "list",
+          "cachedResultName": "VENTAS SEMANALES",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HTLxbDOFRSAerYmEj161822aywGF0i6oC-LQhIYJ-HY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HTLxbDOFRSAerYmEj161822aywGF0i6oC-LQhIYJ-HY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "idProducto": "={{ $json.idProducto }}",
+            "Cantidad": "={{ $json.cantidad }}",
+            "PrecioUnitario": "={{ $json.precioUnitario }}",
+            "Subtotal": "={{ $json.subtotal }}",
+            "Fecha": "={{ $now }}",
+            "Estado": "={{ $json.estado }}"
+          },
+          "matchingColumns": [
+            "idProducto"
+          ],
+          "schema": [
+            {
+              "id": "idProducto",
+              "displayName": "idProducto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Cantidad",
+              "displayName": "Cantidad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PrecioUnitario",
+              "displayName": "PrecioUnitario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Subtotal",
+              "displayName": "Subtotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cantidad",
+              "displayName": "cantidad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "precioUnitario",
+              "displayName": "precioUnitario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "subtotal",
+              "displayName": "subtotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1104,
+        -32
+      ],
+      "id": "e4f5f8a5-7578-487b-9c93-f9018fe712a5",
+      "name": "Add sell on sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "seFx2GDZ3Ot9ss91",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Array": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Split Array",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set fields1": {
+      "main": [
+        [
+          {
+            "node": "Add sell on sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Set fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set fields2": {
+      "main": [
+        [
+          {
+            "node": "Add sell on sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add sell on sheet2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "enyoitrabajo.app.n8n.cloud",
+            "user-agent": "Apache-HttpClient/5.5 (Java/21.0.9)",
+            "content-length": "191",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "52.15.61.25",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "US",
+            "cf-ray": "9a12ffc5f26838e5-YYZ",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "52.15.61.25, 172.69.214.211",
+            "x-forwarded-host": "enyoitrabajo.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-90-644db48b77-zcxv8",
+            "x-is-trusted": "yes",
+            "x-real-ip": "52.15.61.25"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "items": [
+              {
+                "idProducto": 6,
+                "cantidad": 2,
+                "precioUnitario": 30000,
+                "subtotal": 60000,
+                "estado": "confirmada"
+              },
+              {
+                "idProducto": 7,
+                "cantidad": 2,
+                "precioUnitario": 111,
+                "subtotal": 222,
+                "estado": "confirmada"
+              }
+            ]
+          },
+          "webhookUrl": "https://enyoitrabajo.app.n8n.cloud/webhook/a3b0c2ff-c479-4efd-9613-d31583a70b8a",
+          "executionMode": "production"
+        }
+      }
+    ],
+    "Split Array": [
+      {
+        "json": {
+          "idProducto": 61,
+          "cantidad": 2,
+          "precioUnitario": 30000,
+          "subtotal": 60000,
+          "estado": "confirmada"
+        }
+      },
+      {
+        "json": {
+          "idProducto": 73,
+          "cantidad": 2,
+          "precioUnitario": 111,
+          "subtotal": 222,
+          "estado": "confirmada"
+        }
+      }
+    ]
+  },
+  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

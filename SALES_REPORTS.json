@@ -1,0 +1,414 @@
+{
+  "name": "SALES-REPORTS",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 7,
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        912,
+        144
+      ],
+      "id": "52868de6-1941-4980-b720-e81fd49b59f4",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Hello. please follow system message",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=ROLE: You are a Sales Analyst.\nCONTEXT: arka is a e-commerce store,that is the company that you are going to work for\nTIME-FRAME:{{$now}} and the last 7 days \nTOOL: SALES_DATA\n  JOB: you job will be creating a document where you will send a report of the sales on the TIME-FRAME directly to CONTEXT based on the TOOL , the report has to have best seller, general reports, money earned, Progress toward targets  and Sales pipeline health.\nPROCESS:\n1.get information from TOOl\n2.with thet information create between 3 and 5 paragraphs tallking about the most importnat insights from the TOOL\n3.Choose a title for every section\n4.Put each paragraph on its respective section\nRULES:\n-always based your report on the TOOL\n-you always have to work with date beetwen the TIME-FRAME\n-always keep the context\n-always make reference to arka(CONTEXT)\n-if there is no data just answer \"no data found\"\n-Do not ask quesetion, this is an answer not a conversation\n-If some information is not given do not mention it\n-Keep the answer clean\n-be specific, do not talk too general\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        144
+      ],
+      "id": "a6b447f5-53f6-4003-805a-0c630ac7af36",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        976,
+        352
+      ],
+      "id": "2e93001f-c7ae-45ef-a75a-985257c1e8f4",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wEvinG3APhirVCjr",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        368
+      ],
+      "id": "4df0acd9-d377-46c0-b12c-0ad17e1c192f",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "sendTo": "benjaminmunera0@gmail.com",
+        "subject": "=Weekly sales analysis {{ $now.format('yyyy-MM-dd') }}",
+        "message": "=Here the weekly sales anylisis for the days between {{ $now.minus(7,'days').format('yyyy-MM-dd') }} - {{ $now.format('yyyy-MM-dd') }}",
+        "options": {
+          "appendAttribution": false,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1920,
+        144
+      ],
+      "id": "d9735dc4-b607-4532-952b-865a09683bdb",
+      "name": "Send a message",
+      "webhookId": "9a9fe438-67fa-4c7b-80bb-bce6d4e144c2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VNmG9H3sds16OSuN",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1HTLxbDOFRSAerYmEj161822aywGF0i6oC-LQhIYJ-HY",
+          "mode": "list",
+          "cachedResultName": "VENTAS SEMANALES",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HTLxbDOFRSAerYmEj161822aywGF0i6oC-LQhIYJ-HY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HTLxbDOFRSAerYmEj161822aywGF0i6oC-LQhIYJ-HY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1232,
+        352
+      ],
+      "id": "14ec686b-47e8-4ce4-b42f-c8126c252792",
+      "name": "SALES_DATA",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "seFx2GDZ3Ot9ss91",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"Tittle\": \"Analysis revenue for week 2 of month 05\",\n\t\"Introduction\": \"On the present day we analyse the week, based on the orders confirmed and cancelled \",\n  \"Section 1\":\"the best seller is product 5 ,  with 6 orders confirmed, 8 order were cancelled for peodutcs 8,9,10\",\n\"section 2\":\"total revenue is 666666, makeing sales on products like product 8 with 6 sales\",\n\"section 3\":\"lots of orders cncelled on product 8, should check the product is not being choseen that more\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1344,
+        352
+      ],
+      "id": "722d8f3d-f52e-4b78-9353-50edd2e8ff88",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        496
+      ],
+      "id": "6dd38ef0-7772-4e15-869d-4720f9d7effc",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "wEvinG3APhirVCjr",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "[TITLE]",
+              "replaceText": "={{ $('AI Agent').item.json.output.Tittle }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "[introduccion]",
+              "replaceText": "={{ $('AI Agent').item.json.output.Introduction }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "[seccion uno]",
+              "replaceText": "={{ $('AI Agent').item.json.output[\"Section 1\"] }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "[seccion dos]",
+              "replaceText": "={{ $('AI Agent').item.json.output[\"section 2\"] }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "[seccion tres]",
+              "replaceText": "={{ $('AI Agent').item.json.output[\"section 3\"] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        144
+      ],
+      "id": "560f441b-b6a4-422f-9260-b7645399f730",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "f2Iy1LAbcEiNEDOA",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1JpRpvaKpMpwgXhDRtNhRcYQ2-2sz7teYCho2AKVRBaw",
+          "mode": "list",
+          "cachedResultName": "DOCUMENT ARKA",
+          "cachedResultUrl": "https://docs.google.com/document/d/1JpRpvaKpMpwgXhDRtNhRcYQ2-2sz7teYCho2AKVRBaw/edit?usp=drivesdk"
+        },
+        "name": "arka ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1408,
+        144
+      ],
+      "id": "7a4c11dd-67d8-4396-aad5-7e333989c26a",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KrfTPfQLLdlEZ2Of",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.documentId }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data",
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "application/pdf"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        144
+      ],
+      "id": "85717e05-2130-4f46-ac92-eba4c73a1332",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KrfTPfQLLdlEZ2Of",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "SALES_DATA": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

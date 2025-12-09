@@ -1,0 +1,123 @@
+{
+  "name": "WORKFLOW-TO-NOTIFY-LOWSTOCK",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "8f2c9a7d-75d0-4d11-a998-1c08377d52b1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        96
+      ],
+      "id": "7b313b17-fdc8-4490-944f-fd584aa33431",
+      "name": "Webhook",
+      "webhookId": "8f2c9a7d-75d0-4d11-a998-1c08377d52b1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "98268240-e93b-4c67-84d4-1b6a930781ad",
+              "name": "producto_id",
+              "value": "={{ $json.body.producto_id }}",
+              "type": "number"
+            },
+            {
+              "id": "83a96042-90eb-4304-a9ef-00e8d6a9d797",
+              "name": "stock_Actual",
+              "value": "={{ $json.body.stock_Actual }}",
+              "type": "number"
+            },
+            {
+              "id": "2e731ed9-e05b-4425-a78a-912bd6c14d36",
+              "name": "proveedor_id",
+              "value": "={{ $json.body.proveedor_id }}",
+              "type": "number"
+            },
+            {
+              "id": "08cf3e14-a971-49b5-99f9-8124713bd004",
+              "name": "proovedor_telefono",
+              "value": "={{ $json.body.proovedor_telefono }}",
+              "type": "string"
+            },
+            {
+              "id": "a37bf9d4-df23-4351-9b99-db15bcf0971d",
+              "name": "nombre_proveedor",
+              "value": "={{ $json.body.nombre_proveedor }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        96
+      ],
+      "id": "709816c8-cec0-4c16-90fa-df5556faa39c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "benjaminmunera0@gmail.com",
+        "subject": "Product Running low!!",
+        "emailType": "text",
+        "message": "=Hi Benjamin!!\nthis email is being send to you in order to let you know that you must contact, the supplier  {{ $json.nombre_proveedor }} to the phone number {{ $json.proovedor_telefono }}, to request re-stock for the product with id {{ $json.producto_id }} that has an stock of {{ $json.stock_Actual }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        656,
+        96
+      ],
+      "id": "1405b0fb-fb3f-4538-9b58-4ba62391ad04",
+      "name": "Send a message",
+      "webhookId": "c3d01dd8-c9f0-412c-a4ca-20acb9760f1a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VNmG9H3sds16OSuN",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 1,
+  "meta": null
+}

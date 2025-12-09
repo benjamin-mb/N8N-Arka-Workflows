@@ -1,0 +1,154 @@
+{
+  "name": "ABANDONED-CAR",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "44e87a4a-2b6b-4f81-84ef-1c336eb39ced",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        160
+      ],
+      "id": "38a0d220-5fe1-4eb3-b9fb-dd8a4e9a697c",
+      "name": "Webhook",
+      "webhookId": "44e87a4a-2b6b-4f81-84ef-1c336eb39ced"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "680c6478-fbf1-4c58-ae08-f2de5f6ed439",
+              "name": "emailUsuario",
+              "value": "={{ $json.body.usuarioEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "1d5e286b-5b3f-49a5-a569-49e5e5c91a12",
+              "name": "body.detalles",
+              "value": "={{ $json.body.detalles }}",
+              "type": "array"
+            },
+            {
+              "id": "1cb48487-849a-4046-b44e-53ce7775d3cc",
+              "name": "body.total",
+              "value": "={{ $json.body.total }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        160
+      ],
+      "id": "ccfb0e6d-4841-4e8b-94c0-9816f72ac8db",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.emailUsuario }}",
+        "subject": "=You left something behind 🛒",
+        "message": "=Hey,\n\nLooks like you left a few awesome things behind! 👀\nYour cart is still waiting for you — and those items are too good to pass up.\n\nHere’s what’s waiting for you:\n\n🛍️ Your Cart\n{{$json.body.detalles.map(item => `• ${item.nombreProducto} — Qty: ${item.cantidad} — Subtotal: ${item.subtotal}`).join('\\n')}}\n\nTotal: {{ $json.body.total }}\n\nDon’t let your favorites get away! Some of these items are popular and might sell out soon.\n\n\nNeed help? Just reply to this email — we’re always happy to lend a hand.\n\nSee you soon,\nThe ARKA Team😎😎",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        656,
+        160
+      ],
+      "id": "e32cb52e-5bb0-40c2-98a2-5abcfe85faa8",
+      "name": "Send a message",
+      "webhookId": "2c5c484f-7eba-4de5-9858-330a0132e944",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VNmG9H3sds16OSuN",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8nworkflows1.app.n8n.cloud",
+            "user-agent": "ReactorNetty/1.2.10",
+            "content-length": "156",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "177.255.182.187",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "CO",
+            "cf-ray": "9970209ca3dc2604-MIA",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "177.255.182.187, 172.70.54.91",
+            "x-forwarded-host": "n8nworkflows1.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-44-68df68bcf-27vmg",
+            "x-is-trusted": "yes",
+            "x-real-ip": "177.255.182.187"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "usuarioEmail": "benjamintrabajo00@gmail.com",
+            "detalles": [
+              {
+                "nombreProducto": "Mouse Logitech MX Master 3",
+                "cantidad": 20,
+                "subtotal": 7000000
+              }
+            ],
+            "total": 7000000
+          },
+          "webhookUrl": "https://n8nworkflows1.app.n8n.cloud/webhook-test/44e87a4a-2b6b-4f81-84ef-1c336eb39ced",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "triggerCount": 1,
+  "meta": null
+}
