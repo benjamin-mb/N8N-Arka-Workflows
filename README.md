@@ -59,6 +59,5 @@ ARKA is a comprehensive e-commerce backend solution that streamlines online stor
 - Google Sheets integration for easy data access and analysis
 - Supports historical sales tracking
 
----
 
-Built with ❤️ as part of AceleraTI Latam's Java Backend Developer Program
+
